@@ -23,6 +23,18 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Download onboardbase
+        run: wget https://onboardbase-cli.fra1.digitaloceanspaces.com/apt/onboardbase.deb
+      - name: Install onboardbase
+        run: sudo dpkg -i ./onboardbase.deb
+      - name: Setup onboardbase
+        run: onboardbase config:set --token "${{secrets.ONBORAD}}"
+      - name: Inject env variable
+        run: |
+          export
+          search_index_key=$(onboardbase build -c "printenv
+          search_index_key" --project "algolia_test" -e "development")
+          echo '$search_index_key'
       - uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
