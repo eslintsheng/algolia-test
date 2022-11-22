@@ -32,7 +32,7 @@ jobs:
       - name: Inject env variable
         run: |
           export
-          SEARCH_INDEX=$(onboardbase run -c "env")
+          SEARCH_INDEX=$(onboardbase run --command="env" -p "algolia_test" -e "development")
           echo "$SEARCH_INDEX"
       - uses: actions/checkout@v3
 
