@@ -21,71 +21,72 @@ jobs:
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  - run:
-      command: >-
-        #!/bin/bash
+  description: |
+    This command installs the onboardbase cli for use in the circleci job.
+  steps:
+    - run:
+        command: >-
+          #!/bin/bash
 
 
-        set -e
+          set -e
 
 
-        exitWithMessage(){
-          echo "$1 environment variable is not set"
-          exit 1
-        }
+          exitWithMessage(){
+            echo "$1 environment variable is not set"
+            exit 1
+          }
 
 
-        checkEmpty(){
-          [[ -n "$SEARCH_INDEX" ]] || exitWithMessage "SEARCH_INDEX"
-          [[ -n "$search_index_key" ]] || exitWithMessage "search_index_key"
-          [[ -n "$search_index_name" ]] || exitWithMessage "search_index_name"
-        }
+          checkEmpty(){
+            [[ -n "$ONBOARDBASE_TOKEN" ]] || exitWithMessage "ONBOARDBASE_TOKEN"
+            [[ -n "$ONBOARDBASE_PROJECT" ]] || exitWithMessage "ONBOARDBASE_PROJECT"
+            [[ -n "$ONBOARDBASE_ENVIRONMENT" ]] || exitWithMessage "ONBOARDBASE_ENVIRONMENT"
+          }
 
 
-        # Check if environment variables are set
+          # Check if environment variables are set
 
-        checkEmpty
-
-
-        # Installs yq command line tool to generate and parse yml files
-
-        wget
-        https://github.com/mikefarah/yq/releases/download/v4.2.0/yq_linux_amd64.tar.gz
-        -O - |\
-          tar xz && sudo mv yq_linux_amd64 /usr/bin/yq
-
-        # Create an empty .onboardbase file
-
-        echo -e "setup:\n  project:\n  environment:" > .onboardbase.yaml
+          checkEmpty
 
 
-        # Populate the file using yq tool with the value from the environment
-        variables
+          # Installs yq command line tool to generate and parse yml files
 
-        yq eval ".setup.project = $algolia_test_vita1" -i .onboardbase.yaml
+          wget
+          https://github.com/mikefarah/yq/releases/download/v4.2.0/yq_linux_amd64.tar.gz
+          -O - |\
+            tar xz && sudo mv yq_linux_amd64 /usr/bin/yq
 
-        yq eval ".setup.environment = development" -i
-        .onboardbase.yaml
+          # Create an empty .onboardbase file
 
-
-        # Installs onboardbase CLI through npm
-
-        yarn global add @onboardbase/cli@latest
+          echo -e "setup:\n  project:\n  environment:" > .onboardbase.yaml
 
 
-        #Show the version of onboardbase that is installed
+          # Populate the file using yq tool with the value from the environment
+          variables
 
-        onboardbase --version
+          yq eval ".setup.project = $ONBOARDBASE_PROJECT" -i .onboardbase.yaml
 
-        # Set the auth token to the 
+          yq eval ".setup.environment = $ONBOARDBASE_ENVIRONMENT" -i
+          .onboardbase.yaml
 
-        onboardbase config:set --token "$ONBOARDBASE_TOKEN"
 
-        #Run a build command that if it runs successfully, singnifies
-        onboardbase is setup successfully, and could be used successfully with
-        the provided credentials.
+          # Installs onboardbase CLI through npm
 
-        onboardbase run "echo 'Onboardbase setup is complete'"
-      name: Install Onboardbase
+          yarn global add @onboardbase/cli@latest
+
+
+          #Show the version of onboardbase that is installed
+
+          onboardbase --version
+
+          # Set the auth token to the 
+
+          onboardbase config:set --token "$ONBOARDBASE_TOKEN"
+
+          #Run a build command that if it runs successfully, singnifies
+          onboardbase is setup successfully, and could be used successfully with
+          the provided credentials.
+
+          onboardbase run "echo 'Onboardbase setup is complete'"
+        name: Install Onboardbase
