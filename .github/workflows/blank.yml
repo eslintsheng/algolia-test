@@ -32,9 +32,9 @@ jobs:
       - name: Inject env variable
         run: |
           export
-          search_index_key=$(onboardbase build -c "printenv
-          search_index_key" --project "algolia_test" -e "development")
-          echo '$search_index_key'
+          SEARCH_INDEX=$(onboardbase build -c "printenv
+          SEARCH_INDEX" --project "algolia_test" -e "development")
+          echo "$SEARCH_INDEX"
       - uses: actions/checkout@v3
 
       # Runs a single command using the runners shell
