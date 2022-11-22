@@ -1,0 +1,9 @@
+name: algolia-test
+on: push
+env: 
+     ENV_VARIABLE: OK
+jobs:
+  test: 
+    runs-on: ubuntu-latest
+    steps: 
+      - run: echo "$ENV_VARIABLE"
